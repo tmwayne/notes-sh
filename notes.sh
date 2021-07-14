@@ -1,12 +1,15 @@
 #!/bin/bash
 #
+# ------------------------------------------------------------------------------
 # Notes
+# ------------------------------------------------------------------------------
 #
 # Tyler Wayne © 2020
+#
 
 CUR_DIR=$( dirname $0 )
 THIS_PROG=$( basename $0 )
-USAGE="Usage: $THIS_PROG [-e virtual_env] [-p port] [vim_args]"
+USAGE="Usage: $THIS_PROG note [...]"
 
 Help() {
   # Function to display help at command line
@@ -18,8 +21,7 @@ Help() {
   echo
 }
 
-## ARGUMENTS
-########################################
+# Arguments --------------------------------------------------------------------
 
 # Command-line arguments
 for arg in "$@"; do
@@ -45,20 +47,19 @@ done
 shift $((OPTIND-1))
 
 
-NOTES_DIR=${NOTES_DIR:-/home/tyler/docs/notes/}
-NOTE="$NOTES_DIR"/$1.txt
+NOTES_DIR=${NOTES_DIR:-$HOME/docs/notes/}
 
-## ASSERTIONS
-########################################
+ARGS=($@) # Accept a list of notes
+NOTES=(${ARGS[@]/#/$NOTES_DIR})
+NOTES=${NOTES[@]/%/.txt}
+
+# Assertions -------------------------------------------------------------------
 
 if [ $# -lt 1 ]; then
   echo $USAGE
   exit 1
 fi
 
-## MAIN
-########################################
+# Main -------------------------------------------------------------------------
 
-if [ -f "$NOTE" ]; then
-  vim $NOTE
-fi
+vim $NOTES # Create a new note if one isn't found
